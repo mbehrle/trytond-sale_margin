@@ -1,0 +1,23 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:sale.line,cost_price:"
+msgid "Cost Price"
+msgstr "Precio coste"
+
+msgctxt "field:sale.line,margin:"
+msgid "Margin"
+msgstr "Margen"
+
+msgctxt "field:sale.sale,margin:"
+msgid "Margin"
+msgstr "Margen"
+
+msgctxt "field:sale.sale,margin_cache:"
+msgid "Margin Cache"
+msgstr "Margen precalculado"
+
+msgctxt "help:sale.sale,margin:"
+msgid "It gives profitability by calculating the difference between the Unit Price and Cost Price."
+msgstr "Proporciona la rentabilidad calculando la diferencia entre el precio unidad y el precio de coste."

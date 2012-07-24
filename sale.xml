@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!-- This file is part sale_margin module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data>
+        <record model="ir.ui.view" id="sale_view_form">
+            <field name="model">sale.sale</field>
+            <field name="inherit" ref="sale.sale_view_form"/>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <data>
+                    <xpath
+                        expr="/form/notebook/page[@id=&quot;sale&quot;]/group[@id=&quot;amount_buttons&quot;]/field[@name=&quot;total_amount&quot;]"
+                        position="after">
+                        <newline/>
+                        <label name="margin" xalign="1.0" xexpand="1"/>
+                        <field name="margin" xalign="1.0" xexpand="0"/>
+                    </xpath>
+                </data>
+                ]]>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="sale_view_tree">
+            <field name="model">sale.sale</field>
+            <field name="inherit" ref="sale.sale_view_tree"/>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <data>
+                    <xpath
+                        expr="/tree/field[@name=&quot;total_amount&quot;]"
+                        position="after">
+                        <field name="margin"/>
+                    </xpath>
+                </data>
+                ]]>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_line_view_form">
+            <field name="model">sale.line</field>
+            <field name="inherit" ref="sale.sale_line_view_form"/>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <data>
+                    <xpath
+                        expr="/form/notebook/page/label[@name=&quot;unit_price&quot;]"
+                        position="before">
+                        <newline/>
+                        <label name="cost_price"/>
+                        <field name="cost_price"/>
+                    </xpath>
+                    <xpath
+                        expr="/form/notebook/page/field[@name=&quot;amount&quot;]"
+                        position="after">
+                        <newline/>
+                        <label name="margin"/>
+                        <field name="margin"/>
+                    </xpath>
+                </data>
+                ]]>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="sale_line_view_tree_sequence">
+            <field name="model">sale.line</field>
+            <field name="inherit" ref="sale.sale_line_view_tree_sequence"/>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <data>
+                    <xpath
+                        expr="/tree/field[@name=&quot;unit_price&quot;]"
+                        position="before">
+                        <field name="cost_price"/>
+                    </xpath>
+                    <xpath
+                        expr="/tree/field[@name=&quot;amount&quot;]"
+                        position="after">
+                        <field name="margin"/>
+                    </xpath>
+                </data>
+                ]]>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="sale_line_view_tree">
+            <field name="model">sale.line</field>
+            <field name="inherit" ref="sale.sale_line_view_tree"/>
+            <field name="arch" type="xml">
+                <![CDATA[
+                <data>
+                    <xpath
+                        expr="/tree/field[@name=&quot;unit_price&quot;]"
+                        position="before">
+                        <field name="cost_price"/>
+                    </xpath>
+                    <xpath
+                        expr="/tree/field[@name=&quot;amount&quot;]"
+                        position="after">
+                        <field name="margin"/>
+                    </xpath>
+                </data>
+                ]]>
+            </field>
+        </record>
+    </data>
+</tryton>
