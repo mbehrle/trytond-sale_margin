@@ -3,14 +3,17 @@
 #the full copyright notices and license terms.
 
 from decimal import Decimal
-from trytond.model import ModelView, ModelSQL, fields
-from trytond.tools import safe_eval, datetime_strftime
+from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.transaction import Transaction
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
 
-class Sale(ModelSQL, ModelView):
-    _name = 'sale.sale'
+__all__ = ['Sale', 'SaleLine']
+__metaclass__ = PoolMeta
+
+class Sale:
+    'Sale'
+    __name__ = 'sale.sale'
 
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('currency_digits', 2),),
@@ -23,36 +26,32 @@ class Sale(ModelSQL, ModelView):
         readonly=True,
         depends=['currency_digits'])
 
-    def get_margin(self, ids, name):
+    def get_margin(self, name):
         '''
         Return the margin of each sales
         '''
-        currency_obj = Pool().get('currency.currency')
-        margins = {}
-        for sale in self.browse(ids):
-            if (sale.state in self._states_cached
-                    and sale.margin_cache is not None):
-                margins[sale.id] = sale.margin_cache
-                continue
-            for l in sale.lines:
-                margin = sum((l.margin for l in sale.lines if l.type == 'line'),
-                    Decimal(0))
-                margins[sale.id] = currency_obj.round(sale.currency, margin)
-        return margins
+        Currency = Pool().get('currency.currency')
+        if (self.state in self._states_cached
+                and self.margin_cache is not None):
+            return self.margin_cache
+        margin = sum((l.margin for l in self.lines if l.type == 'line'),
+                Decimal(0))
+        return Currency.round(self.currency, margin)
 
-    def store_cache(self, ids):
-        for sale in self.browse(ids):
-            self.write(sale.id, {
+    @classmethod
+    def store_cache(cls, sales):
+        for sale in sales:
+            cls.write([sale], {
                     'untaxed_amount_cache': sale.untaxed_amount,
                     'tax_amount_cache': sale.tax_amount,
                     'total_amount_cache': sale.total_amount,
                     'margin_cache': sale.margin,
                     })
 
-Sale()
 
-class SaleLine(ModelSQL, ModelView):
-    _name = 'sale.line'
+class SaleLine:
+    'Sale Line'
+    __name__ = 'sale.line'
 
     cost_price = fields.Numeric('Cost Price', digits=(16, 4),
         states={
@@ -68,40 +67,30 @@ class SaleLine(ModelSQL, ModelView):
                 'unit_price', 'unit', '_parent_sale.currency'],
             depends=['type']), 'get_margin')
 
-    def on_change_product(self, vals):
-        pool = Pool()
-        product_obj = pool.get('product.product')
-
-        if not vals.get('product'):
+    def on_change_product(self):
+        if not self.product:
             return {}
-
-        res = super(SaleLine, self).on_change_product(vals)
-
-        product = product_obj.browse(vals['product'])
-        res['cost_price'] = product.cost_price
+        res = super(SaleLine, self).on_change_product()
+        res['cost_price'] = self.product.cost_price
         return res
 
-    def on_change_with_margin(self, vals):
-        cost = Decimal(str(vals.get('quantity') or '0.0')) * \
-                    (vals.get('cost_price') or Decimal('0.0'))
-        amount = Decimal(str(vals.get('quantity') or '0.0')) * \
-                    (vals.get('unit_price') or Decimal('0.0'))
+    def on_change_with_margin(self):
+        cost = Decimal(str(self.quantity or '0.0')) * \
+                    (self.cost_price or Decimal('0.0'))
+        amount = Decimal(str(self.quantity or '0.0')) * \
+                    (self.unit_price or Decimal('0.0'))
         res = Decimal(amount-cost)
         return res
 
-    def get_margin(self, ids, name):
+    def get_margin(self, name):
         '''
         Return the margin of each sale lines
         '''
-        currency_obj = Pool().get('currency.currency')
+        Currency = Pool().get('currency.currency')
         res = {}
-        for line in self.browse(ids):
-            if line.type == 'line':
-                cost = Decimal(str(line.quantity)) * (line.cost_price or Decimal('0.0')) 
-                amount = Decimal(str(line.quantity)) * (line.unit_price)
-                res[line.id] = currency_obj.round(line.sale.currency, amount - cost)
-            else:
-                res[line.id] = Decimal('0.0')
-        return res
-
-SaleLine()
+        if self.type == 'line':
+            cost = Decimal(str(self.quantity)) * (self.cost_price or Decimal('0.0')) 
+            amount = Decimal(str(self.quantity)) * (self.unit_price)
+            return Currency.round(self.sale.currency, amount - cost)
+        else:
+            return Decimal('0.0')

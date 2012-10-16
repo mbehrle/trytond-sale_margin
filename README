@@ -2,7 +2,6 @@ trytond_sale_margin
 ===================
 
 The sale_margin module of the Tryton application platform.
-See __tryton__.py
 
 Installing
 ----------

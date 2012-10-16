@@ -45,14 +45,12 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
                     <xpath
                         expr="/form/notebook/page/label[@name=&quot;unit_price&quot;]"
                         position="before">
-                        <newline/>
                         <label name="cost_price"/>
                         <field name="cost_price"/>
                     </xpath>
                     <xpath
                         expr="/form/notebook/page/field[@name=&quot;amount&quot;]"
                         position="after">
-                        <newline/>
                         <label name="margin"/>
                         <field name="margin"/>
                     </xpath>
