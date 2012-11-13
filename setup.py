@@ -27,20 +27,20 @@ for dep in info.get('depends', []):
 requires.append('trytond >= %s.%s, < %s.%s' %
         (major_version, minor_version, major_version, minor_version + 1))
 
-setup(name='trytond_sale_margin',
+setup(name='trytonzz_sale_margin',
     version=info.get('version', '0.0.1'),
     description='Tryton module to add margins (price sale-price cost) in sales',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
-    download_url="https://bitbucket.org/zikzakmedia/trytond-sale_margin",
-    package_dir={'trytond.modules.sale_margin': '.'},
+    download_url="https://bitbucket.org/zikzakmedia/trytonzz-sale_margin",
+    package_dir={'trytonzz.modules.sale_margin': '.'},
     packages=[
-        'trytond.modules.sale_margin',
-        'trytond.modules.sale_margin.tests',
+        'trytonzz.modules.sale_margin',
+        'trytonzz.modules.sale_margin.tests',
     ],
     package_data={
-        'trytond.modules.sale_margin': info.get('xml', []) \
+        'trytonzz.modules.sale_margin': info.get('xml', []) \
             + ['tryton.cfg', 'locale/*.po'],
     },
     classifiers=[
@@ -63,9 +63,9 @@ setup(name='trytond_sale_margin',
     install_requires=requires,
     zip_safe=False,
     entry_points="""
-    [trytond.modules]
-    sale_margin = trytond.modules.sale_margin
+    [trytonzz.modules]
+    sale_margin = trytonzz.modules.sale_margin
     """,
     test_suite='tests',
-    test_loader='trytond.test_loader:Loader',
+    test_loader='trytonzz.test_loader:Loader',
 )
