@@ -33,14 +33,14 @@ setup(name='trytonzz_sale_margin',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
-    download_url="https://bitbucket.org/zikzakmedia/trytonzz-sale_margin",
-    package_dir={'trytonzz.modules.sale_margin': '.'},
+    download_url="https://bitbucket.org/zikzakmedia/trytond-sale_margin",
+    package_dir={'trytond.modules.sale_margin': '.'},
     packages=[
-        'trytonzz.modules.sale_margin',
-        'trytonzz.modules.sale_margin.tests',
+        'trytond.modules.sale_margin',
+        'trytond.modules.sale_margin.tests',
     ],
     package_data={
-        'trytonzz.modules.sale_margin': info.get('xml', []) \
+        'trytond.modules.sale_margin': info.get('xml', []) \
             + ['tryton.cfg', 'locale/*.po'],
     },
     classifiers=[
@@ -63,9 +63,9 @@ setup(name='trytonzz_sale_margin',
     install_requires=requires,
     zip_safe=False,
     entry_points="""
-    [trytonzz.modules]
-    sale_margin = trytonzz.modules.sale_margin
+    [trytond.modules]
+    sale_margin = trytond.modules.sale_margin
     """,
     test_suite='tests',
-    test_loader='trytonzz.test_loader:Loader',
+    test_loader='trytond.test_loader:Loader',
 )
