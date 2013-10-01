@@ -76,9 +76,7 @@ class SaleLine:
     def on_change_with_margin(self):
         cost = Decimal(str(self.quantity or '0.0')) * \
                     (self.cost_price or Decimal('0.0'))
-        amount = Decimal(str(self.quantity or '0.0')) * \
-                    (self.unit_price or Decimal('0.0'))
-        res = Decimal(amount-cost)
+        res = Decimal(self.amount-cost)
         return res
 
     def get_margin(self, name):
@@ -87,8 +85,7 @@ class SaleLine:
         '''
         Currency = Pool().get('currency.currency')
         if self.type == 'line':
-            cost = Decimal(str(self.quantity)) * (self.cost_price or Decimal('0.0')) 
-            amount = Decimal(str(self.quantity)) * (self.unit_price)
-            return Currency.round(self.sale.currency, amount - cost)
+            cost = Decimal(str(self.quantity)) * (self.cost_price or Decimal('0.0'))
+            return Currency.round(self.sale.currency, self.amount - cost)
         else:
             return Decimal('0.0')
