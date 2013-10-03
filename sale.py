@@ -62,9 +62,9 @@ class SaleLine:
             states={
                 'invisible': ~Eval('type').in_(['line', 'subtotal']),
                 'readonly': ~Eval('_parent_sale'),
-                }, on_change_with=['type', 'quantity', 'cost_price', 
+                }, on_change_with=['type', 'quantity', 'cost_price', 'amount', 
                 'unit_price', 'unit', '_parent_sale.currency'],
-            depends=['type']), 'get_margin')
+            depends=['type', 'amount']), 'get_margin')
 
     def on_change_product(self):
         if not self.product:
@@ -76,8 +76,9 @@ class SaleLine:
     def on_change_with_margin(self):
         cost = Decimal(str(self.quantity or '0.0')) * \
                     (self.cost_price or Decimal('0.0'))
-        res = Decimal(self.amount-cost)
-        return res
+        if self.amount:
+            return Decimal(self.amount-cost)
+        return Decimal('0.0')
 
     def get_margin(self, name):
         '''
