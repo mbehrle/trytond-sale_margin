@@ -55,7 +55,6 @@ class SaleLine:
     cost_price = fields.Numeric('Cost Price', digits=(16, 4),
         states={
             'invisible': Eval('type') != 'line',
-            'required': Eval('type') == 'line',
             }, depends=['type'])
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('_parent_sale', {}).get('currency_digits', 2)),
@@ -65,6 +64,10 @@ class SaleLine:
                 }, on_change_with=['type', 'quantity', 'cost_price', 'amount', 
                 'unit_price', 'unit', '_parent_sale.currency'],
             depends=['type', 'amount']), 'get_margin')
+
+    @staticmethod
+    def default_cost_price():
+        return Decimal('0.0')
 
     def on_change_product(self):
         if not self.product:
