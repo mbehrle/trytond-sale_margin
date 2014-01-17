@@ -1,7 +1,6 @@
 #This file is part sale_margin module for Tryton.
 #The COPYRIGHT file at the top level of this repository contains 
 #the full copyright notices and license terms.
-
 from decimal import Decimal
 from trytond.model import fields
 from trytond.pyson import Eval
@@ -10,10 +9,9 @@ from trytond.pool import Pool, PoolMeta
 __all__ = ['Sale', 'SaleLine']
 __metaclass__ = PoolMeta
 
-class Sale:
-    'Sale'
-    __name__ = 'sale.sale'
 
+class Sale:
+    __name__ = 'sale.sale'
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('currency_digits', 2),),
             depends=['currency_digits'], 
@@ -49,7 +47,6 @@ class Sale:
 
 
 class SaleLine:
-    'Sale Line'
     __name__ = 'sale.line'
 
     cost_price = fields.Numeric('Cost Price', digits=(16, 4),
