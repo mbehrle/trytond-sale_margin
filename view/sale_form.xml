@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- This file is part of sale_margin module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full
+copyright notices and license terms. -->
+<data>
+    <xpath
+        expr="/form/notebook/page[@id=&quot;sale&quot;]/group[@id=&quot;amount_buttons&quot;]/field[@name=&quot;total_amount&quot;]"
+        position="after">
+        <newline/>
+        <label name="margin" xalign="1.0" xexpand="1"/>
+        <field name="margin" xalign="1.0" xexpand="0"/>
+    </xpath>
+</data>
