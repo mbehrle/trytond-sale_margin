@@ -4,7 +4,7 @@ The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <data>
     <xpath
-        expr="/tree/field[@name=&quot;total_amount&quot;]"
+        expr="/tree/field[@name=&quot;untaxed_amount&quot;]"
         position="after">
         <field name="margin"/>
     </xpath>
