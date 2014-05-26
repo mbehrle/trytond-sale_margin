@@ -58,14 +58,14 @@ class SaleLine:
             states={
                 'invisible': ~Eval('type').in_(['line', 'subtotal']),
                 'readonly': ~Eval('_parent_sale'),
-                }, on_change_with=['type', 'quantity', 'cost_price', 'amount', 
-                'unit_price', 'unit', '_parent_sale.currency'],
+                },
             depends=['type', 'amount']), 'get_margin')
 
     @staticmethod
     def default_cost_price():
         return Decimal('0.0')
 
+    @fields.depends('product')
     def on_change_product(self):
         if not self.product:
             return {}
@@ -73,6 +73,8 @@ class SaleLine:
         res['cost_price'] = self.product.cost_price
         return res
 
+    @fields.depends('type', 'quantity', 'cost_price', 'amount', 'unit_price',
+        'unit', '_parent_sale.currency')
     def on_change_with_margin(self):
         cost = Decimal(str(self.quantity or '0.0')) * \
                     (self.cost_price or Decimal('0.0'))
