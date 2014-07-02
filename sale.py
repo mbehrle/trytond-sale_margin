@@ -65,12 +65,13 @@ class SaleLine:
     def default_cost_price():
         return Decimal('0.0')
 
-    @fields.depends('product')
+    @fields.depends('product', 'unit', 'quantity', 'description',
+        '_parent_sale.party', '_parent_sale.currency',
+        '_parent_sale.sale_date')
     def on_change_product(self):
-        if not self.product:
-            return {}
         res = super(SaleLine, self).on_change_product()
-        res['cost_price'] = self.product.cost_price
+        if self.product:
+            res['cost_price'] = self.product.cost_price
         return res
 
     @fields.depends('type', 'quantity', 'cost_price', 'amount', 'unit_price',
