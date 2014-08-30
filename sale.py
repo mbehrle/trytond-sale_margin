@@ -1,5 +1,5 @@
 #This file is part sale_margin module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains 
+#The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 from decimal import Decimal
 from trytond.model import fields
@@ -14,9 +14,9 @@ class Sale:
     __name__ = 'sale.sale'
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('currency_digits', 2),),
-            depends=['currency_digits'], 
+            depends=['currency_digits'],
             help='It gives profitability by calculating the difference '
-             'between the Unit Price and Cost Price.'), 
+                'between the Unit Price and Cost Price.'),
             'get_margin')
     margin_cache = fields.Numeric('Margin Cache',
         digits=(16, Eval('currency_digits', 2)),
@@ -80,7 +80,7 @@ class SaleLine:
         cost = Decimal(str(self.quantity or '0.0')) * \
                     (self.cost_price or Decimal('0.0'))
         if self.amount:
-            return Decimal(self.amount-cost)
+            return Decimal(self.amount - cost)
         return Decimal('0.0')
 
     def get_margin(self, name):
@@ -89,7 +89,9 @@ class SaleLine:
         '''
         Currency = Pool().get('currency.currency')
         if self.type == 'line':
-            cost = Decimal(str(self.quantity)) * (self.cost_price or Decimal('0.0'))
+            cost = Decimal(str(self.quantity)) * (self.cost_price or
+                Decimal('0.0'))
             return Currency.round(self.sale.currency, self.amount - cost)
+
         else:
             return Decimal('0.0')
