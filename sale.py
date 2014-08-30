@@ -88,10 +88,22 @@ class SaleLine:
         Return the margin of each sale lines
         '''
         Currency = Pool().get('currency.currency')
+        currency = self.sale.currency
         if self.type == 'line':
             cost = Decimal(str(self.quantity)) * (self.cost_price or
                 Decimal('0.0'))
-            return Currency.round(self.sale.currency, self.amount - cost)
+            return Currency.round(currency, self.amount - cost)
 
+        elif self.type == 'subtotal':
+            cost = Decimal('0.0')
+            for line2 in self.sale.lines:
+                if line2.type == 'line':
+                    cost2 = Decimal(str(line2.quantity)) * (line2.cost_price or
+                        Decimal('0.0'))
+                    cost += Currency.round(currency, line2.amount - cost2)
+                elif line2.type == 'subtotal':
+                    if self == line2:
+                        return cost
+                    cost = Decimal('0.0')
         else:
             return Decimal('0.0')
