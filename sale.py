@@ -5,6 +5,8 @@ from decimal import Decimal
 from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.pool import Pool, PoolMeta
+from trytond.config import CONFIG
+DIGITS = int(CONFIG.get('unit_price_digits', 4))
 
 __all__ = ['Sale', 'SaleLine']
 __metaclass__ = PoolMeta
@@ -48,8 +50,7 @@ class Sale:
 
 class SaleLine:
     __name__ = 'sale.line'
-
-    cost_price = fields.Numeric('Cost Price', digits=(16, 4),
+    cost_price = fields.Numeric('Cost Price', digits=(16, DIGITS),
         states={
             'invisible': Eval('type') != 'line',
             }, depends=['type'])
