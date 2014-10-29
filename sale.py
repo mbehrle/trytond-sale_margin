@@ -60,31 +60,28 @@ class SaleLine:
                 'invisible': ~Eval('type').in_(['line', 'subtotal']),
                 'readonly': ~Eval('_parent_sale'),
                 },
-            depends=['type', 'amount']), 'get_margin')
+            depends=['type', 'amount']),
+        'on_change_with_margin')
+
+    @classmethod
+    def __setup__(cls):
+        super(SaleLine, cls).__setup__()
+        if hasattr(cls, 'gross_unit_price'):
+            cls.on_change_with_margin.depends.add('gross_unit_price')
 
     @staticmethod
     def default_cost_price():
         return Decimal('0.0')
 
-    @fields.depends('product', 'unit', 'quantity', 'description',
-        '_parent_sale.party', '_parent_sale.currency',
-        '_parent_sale.sale_date')
     def on_change_product(self):
         res = super(SaleLine, self).on_change_product()
         if self.product:
             res['cost_price'] = self.product.cost_price
         return res
 
-    @fields.depends('type', 'quantity', 'cost_price', 'amount', 'unit_price',
-        'unit', '_parent_sale.currency')
-    def on_change_with_margin(self):
-        cost = Decimal(str(self.quantity or '0.0')) * \
-                    (self.cost_price or Decimal('0.0'))
-        if self.amount:
-            return Decimal(self.amount - cost)
-        return Decimal('0.0')
-
-    def get_margin(self, name):
+    @fields.depends('type', 'quantity', 'cost_price', '_parent_sale.currency',
+        '_parent_sale.lines', methods=['amount'])
+    def on_change_with_margin(self, name=None):
         '''
         Return the margin of each sale lines
         '''
@@ -93,8 +90,8 @@ class SaleLine:
         if self.type == 'line':
             cost = Decimal(str(self.quantity)) * (self.cost_price or
                 Decimal('0.0'))
+            self.amount = self.on_change_with_amount()
             return Currency.round(currency, self.amount - cost)
-
         elif self.type == 'subtotal':
             cost = Decimal('0.0')
             for line2 in self.sale.lines:
