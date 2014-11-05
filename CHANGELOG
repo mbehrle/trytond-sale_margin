@@ -1,8 +1,13 @@
+Version 3.4.0 - 2014-11-03
 * Add compatibility (as extra dependency) with sale_discount
 * Improve sale line margin computation unifying getter and on_change_with and
   calling on_change_with_amount
 
 Version 3.2.0 - 2014-05-22
+
+Version 3.0.0 - 2013-10-25
+
+Version 2.8.0 - 2013-04-26
 
 Version 2.6.0 - 2012-10-16
 * Active Record

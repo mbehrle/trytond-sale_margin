@@ -5,8 +5,8 @@ from decimal import Decimal
 from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.pool import Pool, PoolMeta
-from trytond.config import CONFIG
-DIGITS = int(CONFIG.get('unit_price_digits', 4))
+from trytond.config import config
+DIGITS = int(config.get('digits', 'unit_price_digits', 4))
 
 __all__ = ['Sale', 'SaleLine']
 __metaclass__ = PoolMeta
@@ -86,6 +86,8 @@ class SaleLine:
         Return the margin of each sale lines
         '''
         Currency = Pool().get('currency.currency')
+        if not self.sale or not self.sale.currency:
+            return Decimal('0.0')
         currency = self.sale.currency
         if self.type == 'line':
             cost = Decimal(str(self.quantity)) * (self.cost_price or
