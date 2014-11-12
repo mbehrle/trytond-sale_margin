@@ -135,7 +135,7 @@ Create category::
     >>> category = ProductCategory(name='Category')
     >>> category.save()
 
-Create product::
+Create products::
 
     >>> ProductUom = Model.get('product.uom')
     >>> unit, = ProductUom.find([('name', '=', 'Unit')])
@@ -143,7 +143,7 @@ Create product::
     >>> Product = Model.get('product.product')
     >>> product = Product()
     >>> template = ProductTemplate()
-    >>> template.name = 'product'
+    >>> template.name = 'Product'
     >>> template.category = category
     >>> template.default_uom = unit
     >>> template.type = 'goods'
@@ -157,6 +157,22 @@ Create product::
     >>> template.save()
     >>> product.template = template
     >>> product.save()
+    >>> product2 = Product()
+    >>> template2 = ProductTemplate()
+    >>> template2.name = 'Product 2'
+    >>> template2.category = category
+    >>> template2.default_uom = unit
+    >>> template2.type = 'goods'
+    >>> template2.purchasable = True
+    >>> template2.salable = True
+    >>> template2.list_price = Decimal('80')
+    >>> template2.cost_price = Decimal('50')
+    >>> template2.account_expense = expense
+    >>> template2.account_revenue = revenue
+    >>> template2.supply_on_sale = True
+    >>> template2.save()
+    >>> product2.template = template2
+    >>> product2.save()
 
 Create payment term::
 
@@ -167,7 +183,7 @@ Create payment term::
     >>> payment_term.lines.append(payment_term_line)
     >>> payment_term.save()
 
-Sale 2 products::
+Sale with 1 product::
 
     >>> config.user = sale_user.id
     >>> Sale = Model.get('sale.sale')
@@ -182,16 +198,56 @@ Sale 2 products::
     >>> sale.save()
     >>> sale.margin
     Decimal('10.00')
+    >>> sale.margin_percent
+    Decimal('1.0000')
 
-    >>> sale = Sale()
-    >>> sale.party = customer
-    >>> sale.payment_term = payment_term
+Add second product and a subtotal::
+
     >>> sale_line = SaleLine()
     >>> sale.lines.append(sale_line)
-    >>> sale_line.description = 'New product'
-    >>> sale_line.quantity = 2
-    >>> sale_line.cost_price = Decimal('5')
-    >>> sale_line.unit_price = Decimal('10')
+    >>> sale_line.product = product2
+    >>> sale_line.quantity = 4
     >>> sale.save()
+    >>> sale_line.margin
+    Decimal('120.00')
+    >>> sale_line.margin_percent
+    Decimal('0.6000')
     >>> sale.margin
-    Decimal('10.00')
+    Decimal('130.00')
+    >>> sale.margin_percent
+    Decimal('0.6190')
+
+Add subtotal and a line without product::
+
+    >>> sale_line = SaleLine()
+    >>> sale.lines.append(sale_line)
+    >>> sale_line.type = 'subtotal'
+    >>> sale_line.description = 'Subtotal'
+    >>> sale_line2 = SaleLine()
+    >>> sale.lines.append(sale_line2)
+    >>> sale_line2.description = 'New product'
+    >>> sale_line2.quantity = 2
+    >>> sale_line2.cost_price = Decimal('100')
+    >>> sale_line2.unit_price = Decimal('125')
+    >>> sale.save()
+    >>> sale_line.margin
+    Decimal('130.00')
+    >>> sale_line.margin_percent
+    Decimal('0.6190')
+    >>> sale_line2.margin
+    Decimal('50.00')
+    >>> sale_line2.margin_percent
+    Decimal('0.2500')
+    >>> sale.margin
+    Decimal('180.00')
+    >>> sale.margin_percent
+    Decimal('0.4390')
+
+Confirm sale and check cache is done::
+
+    >>> Sale.quote([sale.id], config.context)
+    >>> Sale.confirm([sale.id], config.context)
+    >>> sale.margin and sale.margin == sale.margin_cache
+    True
+    >>> sale.margin_percent and sale.margin_percent == sale.margin_percent_cache
+    True

@@ -4,10 +4,14 @@ The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <data>
     <xpath
-        expr="/form/notebook/page[@id=&quot;sale&quot;]/group[@id=&quot;amount_buttons&quot;]/field[@name=&quot;total_amount&quot;]"
-        position="after">
-        <newline/>
+        expr="/form/notebook/page[@id=&quot;sale&quot;]/group[@id=&quot;amount_buttons&quot;]/label[@name=&quot;untaxed_amount&quot;]"
+        position="before">
         <label name="margin" xalign="1.0" xexpand="1"/>
         <field name="margin" xalign="1.0" xexpand="0"/>
+        <label name="margin_percent" xalign="1.0" xexpand="1"/>
+        <group id="margin_percent" colspan="1" col="2" xexpand="0">
+            <field name="margin_percent" factor="100" xalign="1.0" xexpand="0"/>
+            <label name="margin_percent" string="%" xalign="0.0" xexpand="1" xfill="1"/>
+        </group>
     </xpath>
 </data>

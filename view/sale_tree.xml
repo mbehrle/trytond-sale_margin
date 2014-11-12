@@ -7,5 +7,6 @@ copyright notices and license terms. -->
         expr="/tree/field[@name=&quot;untaxed_amount&quot;]"
         position="after">
         <field name="margin"/>
+        <field name="margin_percent" factor="100"/>
     </xpath>
 </data>
