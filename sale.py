@@ -47,7 +47,7 @@ class Sale:
                 and self.margin_percent_cache is not None):
             return self.margin_percent_cache
 
-        cost = sum(Decimal(str(l.quantity)) * (l.cost_price or Decimal('0.0'))
+        cost = sum(Decimal(str(l.quantity)) * (l.cost_price or Decimal(0))
             for l in self.lines if l.type == 'line')
         if cost:
             return (self.margin / cost).quantize(Decimal('0.0001'))
@@ -90,7 +90,7 @@ class SaleLine:
 
     @staticmethod
     def default_cost_price():
-        return Decimal('0.0')
+        return Decimal(0)
 
     def on_change_product(self):
         res = super(SaleLine, self).on_change_product()
@@ -106,28 +106,28 @@ class SaleLine:
         '''
         Currency = Pool().get('currency.currency')
         if not self.sale or not self.sale.currency:
-            return Decimal('0.0')
+            return Decimal(0)
         currency = self.sale.currency
         if self.type == 'line':
             if self.quantity and self.cost_price:
                 cost = Decimal(str(self.quantity)) * (self.cost_price)
             else:
-                cost = Decimal('0.0')
+                cost = Decimal(0)
             self.amount = self.on_change_with_amount()
             return Currency.round(currency, self.amount - cost)
         elif self.type == 'subtotal':
-            cost = Decimal('0.0')
+            cost = Decimal(0)
             for line2 in self.sale.lines:
                 if self == line2:
                     return cost
                 if line2.type == 'line':
                     cost2 = Decimal(str(line2.quantity)) * (line2.cost_price or
-                        Decimal('0.0'))
+                        Decimal(0))
                     cost += Currency.round(currency, line2.amount - cost2)
                 elif line2.type == 'subtotal':
-                    cost = Decimal('0.0')
+                    cost = Decimal(0)
         else:
-            return Decimal('0.0')
+            return Decimal(0)
 
     @fields.depends('type', 'quantity', 'cost_price', '_parent_sale.currency',
         '_parent_sale.lines', methods=['margin'])
@@ -143,16 +143,16 @@ class SaleLine:
             if not self.quantity or not self.cost_price:
                 return
             cost = Decimal(str(self.quantity)) * (self.cost_price or
-                Decimal('0.0'))
+                Decimal(0))
             return (self.margin / cost).quantize(Decimal('0.0001'))
         else:
             currency = self.sale.currency
-            cost = Decimal('0.0')
+            cost = Decimal(0)
             for line2 in self.sale.lines:
                 if self == line2:
                     return (self.margin / cost).quantize(Decimal('0.0001'))
                 if line2.type == 'line':
                     cost += (Decimal(str(line2.quantity))
-                        * (line2.cost_price or Decimal('0.0')))
+                        * (line2.cost_price or Decimal(0)))
                 elif line2.type == 'subtotal':
-                    cost = Decimal('0.0')
+                    cost = Decimal(0)
