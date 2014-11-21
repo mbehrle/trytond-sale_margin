@@ -109,8 +109,10 @@ class SaleLine:
             return Decimal('0.0')
         currency = self.sale.currency
         if self.type == 'line':
-            cost = Decimal(str(self.quantity)) * (self.cost_price or
-                Decimal('0.0'))
+            if self.quantity and self.cost_price:
+                cost = Decimal(str(self.quantity)) * (self.cost_price)
+            else:
+                cost = Decimal('0.0')
             self.amount = self.on_change_with_amount()
             return Currency.round(currency, self.amount - cost)
         elif self.type == 'subtotal':
