@@ -51,6 +51,8 @@ class Sale:
             for l in self.lines if l.type == 'line')
         if cost:
             return (self.margin / cost).quantize(Decimal('0.0001'))
+        else:
+            return Decimal('1.0')
 
     @classmethod
     def store_cache(cls, sales):
@@ -132,25 +134,27 @@ class SaleLine:
     @fields.depends('type', 'quantity', 'cost_price', '_parent_sale.currency',
         '_parent_sale.lines', methods=['margin'])
     def on_change_with_margin_percent(self, name=None):
-        Currency = Pool().get('currency.currency')
-
         if self.type not in ('line', 'subtotal'):
             return
         self.margin = self.on_change_with_margin()
         if not self.margin:
             return
         if self.type == 'line':
-            if not self.quantity or not self.cost_price:
+            if not self.quantity:
                 return
+            if not self.cost_price:
+                return Decimal('1.0')
             cost = Decimal(str(self.quantity)) * (self.cost_price or
                 Decimal(0))
             return (self.margin / cost).quantize(Decimal('0.0001'))
         else:
-            currency = self.sale.currency
             cost = Decimal(0)
             for line2 in self.sale.lines:
                 if self == line2:
-                    return (self.margin / cost).quantize(Decimal('0.0001'))
+                    if not cost:
+                        return Decimal('1.0')
+                    else:
+                        return (self.margin / cost).quantize(Decimal('0.0001'))
                 if line2.type == 'line':
                     cost += (Decimal(str(line2.quantity))
                         * (line2.cost_price or Decimal(0)))
