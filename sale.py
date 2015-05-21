@@ -2,6 +2,7 @@
 #The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 from decimal import Decimal
+from math import fabs
 from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.pool import Pool, PoolMeta
@@ -47,7 +48,8 @@ class Sale:
                 and self.margin_percent_cache is not None):
             return self.margin_percent_cache
 
-        cost = sum(Decimal(str(l.quantity)) * (l.cost_price or Decimal(0))
+        cost = sum(
+            Decimal(str(fabs(l.quantity))) * (l.cost_price or Decimal(0))
             for l in self.lines if l.type == 'line')
         if cost:
             return (self.margin / cost).quantize(Decimal('0.0001'))
@@ -144,8 +146,7 @@ class SaleLine:
                 return
             if not self.cost_price:
                 return Decimal('1.0')
-            cost = Decimal(str(self.quantity)) * (self.cost_price or
-                Decimal(0))
+            cost = self.get_cost_price()
             return (self.margin / cost).quantize(Decimal('0.0001'))
         else:
             cost = Decimal(0)
@@ -156,7 +157,10 @@ class SaleLine:
                     else:
                         return (self.margin / cost).quantize(Decimal('0.0001'))
                 if line2.type == 'line':
-                    cost += (Decimal(str(line2.quantity))
-                        * (line2.cost_price or Decimal(0)))
+                    cost += line2.get_cost_price()
                 elif line2.type == 'subtotal':
                     cost = Decimal(0)
+
+    def get_cost_price(self):
+        return Decimal(str(fabs(self.quantity))) * (self.cost_price or
+                Decimal(0))
