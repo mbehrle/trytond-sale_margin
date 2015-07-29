@@ -100,6 +100,8 @@ class SaleLine:
         res = super(SaleLine, self).on_change_product()
         if self.product:
             res['cost_price'] = self.product.cost_price
+            res['cost_price'] = res['cost_price'].quantize(
+                Decimal(1) / 10 ** self.__class__.cost_price.digits[1])
         return res
 
     @fields.depends('type', 'quantity', 'cost_price', '_parent_sale.currency',
