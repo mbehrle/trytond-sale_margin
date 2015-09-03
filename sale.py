@@ -6,6 +6,7 @@ from math import fabs
 from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.pool import Pool, PoolMeta
+from trytond.transaction import Transaction
 from trytond.config import config as config_
 
 __all__ = ['Sale', 'SaleLine']
@@ -97,13 +98,13 @@ class SaleLine:
     def default_cost_price():
         return Decimal(0)
 
+    @fields.depends('product')
     def on_change_product(self):
-        res = super(SaleLine, self).on_change_product()
+        super(SaleLine, self).on_change_product()
         if self.product:
-            res['cost_price'] = self.product.cost_price
-            res['cost_price'] = res['cost_price'].quantize(
+            cost_price = self.product.cost_price
+            self.cost_price = cost_price.quantize(
                 Decimal(1) / 10 ** self.__class__.cost_price.digits[1])
-        return res
 
     @fields.depends('type', 'quantity', 'cost_price', '_parent_sale.currency',
         '_parent_sale.lines', methods=['amount'])
