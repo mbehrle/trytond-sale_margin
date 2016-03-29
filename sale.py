@@ -9,12 +9,12 @@ from trytond.pool import Pool, PoolMeta
 from trytond.config import config as config_
 
 __all__ = ['Sale', 'SaleLine']
-__metaclass__ = PoolMeta
 
 DIGITS = config_.getint('product', 'price_decimal', default=4)
 
 
 class Sale:
+    __metaclass__ = PoolMeta
     __name__ = 'sale.sale'
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('currency_digits', 2),),
@@ -68,6 +68,7 @@ class Sale:
 
 
 class SaleLine:
+    __metaclass__ = PoolMeta
     __name__ = 'sale.line'
     cost_price = fields.Numeric('Cost Price', digits=(16, DIGITS),
         states={
