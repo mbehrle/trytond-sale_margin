@@ -1,16 +1,14 @@
-#This file is part sale_margin module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains
-#the full copyright notices and license terms.
+# This file is part sale_margin module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 from decimal import Decimal
 from math import fabs
 from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.pool import Pool, PoolMeta
-from trytond.config import config as config_
+from trytond.modules.product import price_digits
 
 __all__ = ['Sale', 'SaleLine']
-
-DIGITS = config_.getint('product', 'price_decimal', default=4)
 
 
 class Sale:
@@ -70,7 +68,7 @@ class Sale:
 class SaleLine:
     __metaclass__ = PoolMeta
     __name__ = 'sale.line'
-    cost_price = fields.Numeric('Cost Price', digits=(16, DIGITS),
+    cost_price = fields.Numeric('Cost Price', digits=price_digits,
         states={
             'invisible': Eval('type') != 'line',
             }, depends=['type'])
