@@ -71,6 +71,7 @@ class SaleLine:
     cost_price = fields.Numeric('Cost Price', digits=price_digits,
         states={
             'invisible': Eval('type') != 'line',
+            'readonly': ~Eval('sale_state').in_(['draft', 'quotation']),
             }, depends=['type'])
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('_parent_sale', {}).get('currency_digits', 2)),
