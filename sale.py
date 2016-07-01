@@ -72,7 +72,8 @@ class SaleLine:
         states={
             'invisible': Eval('type') != 'line',
             'readonly': ~Eval('sale_state').in_(['draft', 'quotation']),
-            }, depends=['type'])
+            },
+        depends=['type', 'sale_state'])
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('_parent_sale', {}).get('currency_digits', 2)),
             states={
