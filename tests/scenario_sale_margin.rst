@@ -8,6 +8,7 @@ Imports::
     >>> from dateutil.relativedelta import relativedelta
     >>> from decimal import Decimal
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
@@ -16,33 +17,20 @@ Imports::
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
 
-Create database::
 
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
+Install sale_margin::
 
-Install sale_margin, sale::
-
-    >>> Module = Model.get('ir.module')
-    >>> modules = Module.find([
-    ...         ('name', 'in', ('sale_margin', 'sale')),
-    ...         ])
-    >>> Module.install([x.id for x in modules], config.context)
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('sale_margin')
 
 Create company::
 
     >>> _ = create_company()
     >>> company = get_company()
 
-Reload the context::
-
-    >>> User = Model.get('res.user')
-    >>> Group = Model.get('res.group')
-    >>> config._context = User.get_preferences(True, config.context)
-
 Create sale user::
 
+    >>> Group = Model.get('res.group')
+    >>> User = Model.get('res.user')
     >>> sale_user = User()
     >>> sale_user.name = 'Sale'
     >>> sale_user.login = 'sale'
