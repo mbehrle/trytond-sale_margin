@@ -9,11 +9,4 @@ this repository contains the full copyright notices and license terms. -->
             <field name="name">configuration_form</field>
         </record>
     </data>
-    <data noupdate="1">
-        <record model="ir.property" id="property_sale_margin_method">
-            <field name="field"
-                search="[('model.model', '=', 'sale.configuration'), ('name', '=', 'sale_margin_method')]" />
-            <field name="value">,cost_price</field>
-        </record>
-    </data>
 </tryton>

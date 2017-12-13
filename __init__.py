@@ -9,6 +9,7 @@ from . import sale
 def register():
     Pool.register(
         configuration.Configuration,
+        configuration.ConfigurationSaleMethod,
         sale.Sale,
         sale.SaleLine,
         module='sale_margin', type_='model')
