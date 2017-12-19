@@ -13,10 +13,9 @@ Imports::
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
     ...     create_chart, get_accounts, create_tax, set_tax_code
-    >>> from.trytond.modules.account_invoice.tests.tools import \
+    >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
-
 
 Install sale_margin::
 
@@ -75,7 +74,6 @@ Create products::
     >>> unit, = ProductUom.find([('name', '=', 'Unit')])
     >>> ProductTemplate = Model.get('product.template')
     >>> Product = Model.get('product.product')
-    >>> product = Product()
     >>> template = ProductTemplate()
     >>> template.name = 'Product'
     >>> template.category = category
@@ -84,14 +82,14 @@ Create products::
     >>> template.purchasable = True
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
-    >>> template.cost_price = Decimal('5')
     >>> template.account_expense = expense
     >>> template.account_revenue = revenue
     >>> template.supply_on_sale = True
+    >>> product, = template.products
+    >>> product.cost_price = Decimal('5')
     >>> template.save()
-    >>> product.template = template
-    >>> product.save()
-    >>> product2 = Product()
+    >>> product, = template.products
+
     >>> template2 = ProductTemplate()
     >>> template2.name = 'Product 2'
     >>> template2.category = category
@@ -104,9 +102,10 @@ Create products::
     >>> template2.account_expense = expense
     >>> template2.account_revenue = revenue
     >>> template2.supply_on_sale = True
+    >>> product2, = template2.products
+    >>> product2.cost_price = Decimal('5')
     >>> template2.save()
-    >>> product2.template = template2
-    >>> product2.save()
+    >>> product2, = template2.products
 
 Create payment term::
 
@@ -143,13 +142,13 @@ Add second product and a subtotal::
     >>> sale_line.quantity = 4
     >>> sale.save()
     >>> sale_line.margin
-    Decimal('120.00')
+    Decimal('300.00')
     >>> sale_line.margin_percent
-    Decimal('0.6000')
+    Decimal('15.0000')
     >>> sale.margin
-    Decimal('130.00')
+    Decimal('310.00')
     >>> sale.margin_percent
-    Decimal('0.6190')
+    Decimal('10.3333')
 
 Add subtotal and a line without product::
 
@@ -165,17 +164,17 @@ Add subtotal and a line without product::
     >>> sale_line2.unit_price = Decimal('125')
     >>> sale.save()
     >>> sale_line.margin
-    Decimal('130.00')
+    Decimal('310.00')
     >>> sale_line.margin_percent
-    Decimal('0.6190')
+    Decimal('10.3333')
     >>> sale_line2.margin
     Decimal('50.00')
     >>> sale_line2.margin_percent
     Decimal('0.2500')
     >>> sale.margin
-    Decimal('180.00')
+    Decimal('360.00')
     >>> sale.margin_percent
-    Decimal('0.4390')
+    Decimal('1.5652')
 
 Confirm sale and check cache is done::
 
