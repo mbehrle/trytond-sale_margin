@@ -2,9 +2,7 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from trytond.model import fields
-from trytond.pool import Pool
-from trytond.pyson import Eval, Bool
-from trytond.pool import PoolMeta
+from trytond.pool import Pool, PoolMeta
 
 __all__ = ['Configuration', 'ConfigurationSaleMethod']
 
@@ -29,7 +27,8 @@ class Configuration:
 
     @classmethod
     def default_sale_margin_method(cls, **pattern):
-        return cls.multivalue_model('sale_margin_method').default_sale_margin_method()
+        return cls.multivalue_model(
+            'sale_margin_method').default_sale_margin_method()
 
 
 class ConfigurationSaleMethod:

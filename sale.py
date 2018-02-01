@@ -17,8 +17,8 @@ class Sale:
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('currency_digits', 2),),
             depends=['currency_digits'],
-            help='It gives profitability by calculating the difference '
-                'between the Unit Price and Cost Price.'),
+            help=('It gives profitability by calculating the difference '
+                'between the Unit Price and Cost Price.')),
         'get_margin')
     margin_cache = fields.Numeric('Margin Cache',
         digits=(16, Eval('currency_digits', 2)),
@@ -184,7 +184,8 @@ class SaleLine:
                     if not price:
                         return Decimal('1.0')
                     else:
-                        return (self.margin / price).quantize(Decimal('0.0001'))
+                        return (
+                            self.margin / price).quantize(Decimal('0.0001'))
                 if line2.type == 'line':
                     if sale_margin_method == 'unit_price':
                         price += line2.get_margin_unit_price()
