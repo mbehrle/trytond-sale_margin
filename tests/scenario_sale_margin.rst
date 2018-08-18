@@ -62,11 +62,22 @@ Create parties::
     >>> customer = Party(name='Customer')
     >>> customer.save()
 
+Set default accounting values::
+
+    >>> AccountConfiguration = Model.get('account.configuration')
+    >>> account_configuration = AccountConfiguration(1)
+    >>> account_configuration.default_category_account_expense = expense
+    >>> account_configuration.default_category_account_revenue = revenue
+    >>> account_configuration.save()
+
 Create category::
 
     >>> ProductCategory = Model.get('product.category')
-    >>> category = ProductCategory(name='Category')
-    >>> category.save()
+    >>> account_category = ProductCategory(name='Category')
+    >>> account_category.accounting = True
+    >>> account_category.account_expense = expense
+    >>> account_category.account_revenue = revenue
+    >>> account_category.save()
 
 Create products::
 
@@ -76,14 +87,12 @@ Create products::
     >>> Product = Model.get('product.product')
     >>> template = ProductTemplate()
     >>> template.name = 'Product'
-    >>> template.category = category
+    >>> template.account_category = account_category
     >>> template.default_uom = unit
     >>> template.type = 'goods'
     >>> template.purchasable = True
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
-    >>> template.account_expense = expense
-    >>> template.account_revenue = revenue
     >>> template.supply_on_sale = True
     >>> product, = template.products
     >>> product.cost_price = Decimal('5')
@@ -92,7 +101,7 @@ Create products::
 
     >>> template2 = ProductTemplate()
     >>> template2.name = 'Product 2'
-    >>> template2.category = category
+    >>> template2.account_category = account_category
     >>> template2.default_uom = unit
     >>> template2.type = 'goods'
     >>> template2.purchasable = True
