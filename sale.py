@@ -122,7 +122,7 @@ class SaleLine:
                 Decimal(1) / 10 ** self.__class__.cost_price.digits[1])
 
     @fields.depends('type', 'quantity', 'cost_price', '_parent_sale.currency',
-        '_parent_sale.lines', methods=['amount'])
+        '_parent_sale.lines', methods=['on_change_with_amount'])
     def on_change_with_margin(self, name=None):
         '''
         Return the margin of each sale lines
@@ -153,7 +153,8 @@ class SaleLine:
             return Decimal(0)
 
     @fields.depends('type', 'quantity', 'cost_price', 'unit_price',
-        '_parent_sale.currency', '_parent_sale.lines', methods=['margin'])
+        '_parent_sale.currency', '_parent_sale.lines',
+        methods=['on_change_with_margin'])
     def on_change_with_margin_percent(self, name=None):
         Configuration = Pool().get('sale.configuration')
 
