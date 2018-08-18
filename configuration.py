@@ -13,8 +13,7 @@ SALE_MARGIN_METHOD = [
 sale_margin_method = fields.Selection(SALE_MARGIN_METHOD, 'Sale Margin Method')
 
 
-class Configuration:
-    __metaclass__ = PoolMeta
+class Configuration(metaclass=PoolMeta):
     __name__ = 'sale.configuration'
     sale_margin_method = fields.MultiValue(sale_margin_method)
 
@@ -31,8 +30,7 @@ class Configuration:
             'sale_margin_method').default_sale_margin_method()
 
 
-class ConfigurationSaleMethod:
-    __metaclass__ = PoolMeta
+class ConfigurationSaleMethod(metaclass=PoolMeta):
     __name__ = 'sale.configuration.sale_method'
     sale_margin_method = sale_margin_method
 

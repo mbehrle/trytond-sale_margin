@@ -11,8 +11,7 @@ from trytond.modules.product import price_digits
 __all__ = ['Sale', 'SaleLine']
 
 
-class Sale:
-    __metaclass__ = PoolMeta
+class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
     margin = fields.Function(fields.Numeric('Margin',
             digits=(16, Eval('currency_digits', 2),),
@@ -80,8 +79,7 @@ class Sale:
                     })
 
 
-class SaleLine:
-    __metaclass__ = PoolMeta
+class SaleLine(metaclass=PoolMeta):
     __name__ = 'sale.line'
     cost_price = fields.Numeric('Cost Price', digits=price_digits,
         states={
