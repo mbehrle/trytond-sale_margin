@@ -7,26 +7,24 @@ from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.product import price_digits
+from trytond.modules.currency.fields import Monetary
 
 __all__ = ['Sale', 'SaleLine']
 
 _ZERO = Decimal(0)
 
+
 class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
-    margin = fields.Function(fields.Numeric('Margin',
-            digits=(16, Eval('currency_digits', 2),),
-            depends=['currency_digits'],
-            help=('It gives profitability by calculating the difference '
-                'between the Unit Price and Cost Price.')),
+    margin = fields.Function(Monetary('Margin',
+        currency='currency', digits='currency',
+        help=('It gives profitability by calculating the difference '
+            'between the Unit Price and Cost Price.')),
         'get_margin')
-    margin_cache = fields.Numeric('Margin Cache',
-        digits=(16, Eval('currency_digits', 2)),
-        readonly=True,
-        depends=['currency_digits'])
+    margin_cache = Monetary('Margin Cache',
+        currency='currency', digits='currency', readonly=True)
     margin_percent = fields.Function(fields.Numeric('Margin (%)',
-            digits=(16, 4)),
-        'get_margin_percent')
+        digits=(16, 4)), 'get_margin_percent')
     margin_percent_cache = fields.Numeric('Margin (%) Cache',
         digits=(16, 4), readonly=True)
 
@@ -88,19 +86,17 @@ class SaleLine(metaclass=PoolMeta):
             'readonly': ~Eval('sale_state').in_(['draft', 'quotation']),
             },
         depends=['type', 'sale_state'])
-    margin = fields.Function(fields.Numeric('Margin',
-            digits=(16, Eval('_parent_sale', {}).get('currency_digits', 2)),
-            states={
-                'invisible': ~Eval('type').in_(['line', 'subtotal']),
-                'readonly': ~Eval('_parent_sale'),
-                },
-            depends=['type', 'amount']),
-        'on_change_with_margin')
+    margin = fields.Function(Monetary('Margin',
+        currency='currency', digits='currency',
+        states={
+            'invisible': ~Eval('type').in_(['line', 'subtotal']),
+            'readonly': ~Eval('_parent_sale'),
+            },
+        depends=['type', 'amount']), 'on_change_with_margin')
     margin_percent = fields.Function(fields.Numeric('Margin (%)',
-            digits=(16, 4), states={
-                'invisible': ~Eval('type').in_(['line', 'subtotal']),
-                }, depends=['type']),
-        'on_change_with_margin_percent')
+        digits=(16, 4), states={
+            'invisible': ~Eval('type').in_(['line', 'subtotal']),
+            }, depends=['type']), 'on_change_with_margin_percent')
 
     @classmethod
     def __setup__(cls):
