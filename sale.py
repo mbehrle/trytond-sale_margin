@@ -96,7 +96,7 @@ class SaleLine(metaclass=PoolMeta):
     margin_percent = fields.Function(fields.Numeric('Margin (%)',
         digits=(16, 4), states={
             'invisible': ~Eval('type').in_(['line', 'subtotal']),
-            }, depends=['type']), 'on_change_with_margin_percent')
+            }), 'on_change_with_margin_percent')
 
     @staticmethod
     def default_cost_price():
