@@ -84,15 +84,13 @@ class SaleLine(metaclass=PoolMeta):
         states={
             'invisible': Eval('type') != 'line',
             'readonly': ~Eval('sale_state').in_(['draft', 'quotation']),
-            },
-        depends=['type', 'sale_state'])
+            })
     margin = fields.Function(Monetary('Margin',
         currency='currency', digits='currency',
         states={
             'invisible': ~Eval('type').in_(['line', 'subtotal']),
             'readonly': ~Eval('_parent_sale'),
-            },
-        depends=['type', 'amount']), 'on_change_with_margin')
+            }), 'on_change_with_margin')
     margin_percent = fields.Function(fields.Numeric('Margin (%)',
         digits=(16, 4), states={
             'invisible': ~Eval('type').in_(['line', 'subtotal']),
